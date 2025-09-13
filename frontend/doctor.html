@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h2 class="text-center">Doctor Portal</h2>
+
+    <!-- Tabs for Login / Sign Up -->
+    <ul class="nav nav-tabs" id="doctorTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button">Login</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button">Sign Up</button>
+      </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+      <!-- Login Form -->
+      <div class="tab-pane fade show active" id="login">
+        <form id="doctorLoginForm">
+          <input type="email" id="doctorEmail" class="form-control mb-2" placeholder="Email" required>
+          <input type="password" id="doctorPassword" class="form-control mb-2" placeholder="Password" required>
+          <button type="submit" class="btn btn-success w-100">Login</button>
+        </form>
+      </div>
+
+      <!-- Sign Up Form -->
+      <div class="tab-pane fade" id="signup">
+        <form id="doctorSignupForm">
+          <input type="text" id="doctorName" class="form-control mb-2" placeholder="Full Name" required>
+          <input type="text" id="doctorSpecialization" class="form-control mb-2" placeholder="Specialization" required>
+          <input type="email" id="doctorEmailSU" class="form-control mb-2" placeholder="Email" required>
+          <input type="password" id="doctorPasswordSU" class="form-control mb-2" placeholder="Password" required>
+          <input type="text" id="doctorAvailability" class="form-control mb-2" placeholder="Availability" required>
+          <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="doctorMsg" class="mt-3 text-center"></div>
+
+    <!-- Doctor appointment section hidden by default -->
+    <div id="doctorSection" style="display:none;">
+      <h3 class="mt-4">Your Appointments</h3>
+      <table class="table table-striped" id="doctorAppointmentTable">
+        <thead>
+          <tr>
+            <th>Patient Name</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    // Doctor login
+    document.getElementById('doctorLoginForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const email = document.getElementById('doctorEmail').value;
+      const password = document.getElementById('doctorPassword').value;
+      doctorLogin(email, password, function(data){
+        if(data.success){
+          document.getElementById('doctorMsg').innerText = "Login Successful";
+          document.getElementById('doctorLoginForm').style.display = 'none';
+          document.getElementById('doctorSection').style.display = 'block';
+          loadDoctorAppointments(data.doctor.doctor_id);
+        } else {
+          document.getElementById('doctorMsg').innerText = "Login Failed";
+        }
+      });
+    });
+
+    // Doctor signup
+    document.getElementById('doctorSignupForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const doctor = {
+        name: document.getElementById('doctorName').value,
+        specialization: document.getElementById('doctorSpecialization').value,
+        email: document.getElementById('doctorEmailSU').value,
+        password: document.getElementById('doctorPasswordSU').value,
+        availability: document.getElementById('doctorAvailability').value
+      };
+      fetch('http://localhost:5000/doctor/signup', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(doctor)
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('doctorMsg').innerText = data.success ? "Sign Up Successful! Please login." : data.message;
+      });
+    });
+
+    // Load doctor appointments with patient names
+    function loadDoctorAppointments(doctorId){
+      getAppointments('doctor', doctorId, function(data){
+        const tbody = document.querySelector('#doctorAppointmentTable tbody');
+        tbody.innerHTML = '';
+        data.forEach(a => {
+          tbody.innerHTML += `<tr>
+            <td>${a.patient_name}</td>
+            <td>${a.appointment_date}</td>
+            <td>${a.appointment_time}</td>
+            <td>${a.status}</td>
+          </tr>`;
+        });
+      });
+    }
+  </script>
+</body>
+</html>

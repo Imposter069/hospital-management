@@ -1,0 +1,28 @@
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+h1, h2, h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+}
+
+button {
+    margin-top: 10px;
+}
+
+#patientMsg, #doctorMsg {
+    font-weight: bold;
+    color: green;
+    text-align: center;
+}
+
+.table {
+    margin-top: 20px;
+}
