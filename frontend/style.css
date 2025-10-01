@@ -1,28 +1,101 @@
+/* ===== Global Styles ===== */
 body {
-    background-color: #f8f9fa;
-    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(to right, #e8f5e9, #f1f8ff);
+    color: #333;
 }
 
+/* ===== Headings ===== */
 h1, h2, h3 {
     text-align: center;
     margin-bottom: 20px;
+    color: #2e7d32;
+    font-weight: 600;
 }
 
+/* ===== Container ===== */
 .container {
-    max-width: 700px;
-    margin: auto;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
 }
 
+/* ===== Card Layout ===== */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+
+/* ===== Buttons ===== */
 button {
-    margin-top: 10px;
+    margin-top: 12px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #42a5f5, #1e88e5);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+button:hover {
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    transform: scale(1.05);
 }
 
+/* ===== Messages ===== */
 #patientMsg, #doctorMsg {
     font-weight: bold;
-    color: green;
+    color: #388e3c;
     text-align: center;
+    margin-top: 15px;
+    font-size: 1.1rem;
+    padding: 10px;
+    border-radius: 8px;
+    background: #e8f5e9;
+    border: 1px solid #c8e6c9;
 }
 
+/* ===== Table ===== */
 .table {
-    margin-top: 20px;
+    margin-top: 25px;
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.table th, .table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+.table th {
+    background: #42a5f5;
+    color: white;
+    font-weight: 600;
+}
+.table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+.table tr:hover {
+    background: #e3f2fd;
+}
+
+/* ===== Footer ===== */
+.footer {
+    text-align: center;
+    padding: 15px;
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 30px;
 }
