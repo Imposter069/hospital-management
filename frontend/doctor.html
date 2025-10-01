@@ -45,8 +45,8 @@
 
     <div id="doctorMsg" class="mt-3 text-center"></div>
 
-    <!-- Doctor appointment section hidden by default -->
-    <div id="doctorSection" style="display:none;">
+    <!-- Doctor appointment section (always visible now) -->
+    <div id="doctorSection">
       <h3 class="mt-4">Your Appointments</h3>
       <table class="table table-striped" id="doctorAppointmentTable">
         <thead>
@@ -73,8 +73,6 @@
       doctorLogin(email, password, function(data){
         if(data.success){
           document.getElementById('doctorMsg').innerText = "Login Successful";
-          document.getElementById('doctorLoginForm').style.display = 'none';
-          document.getElementById('doctorSection').style.display = 'block';
           loadDoctorAppointments(data.doctor.doctor_id);
         } else {
           document.getElementById('doctorMsg').innerText = "Login Failed";

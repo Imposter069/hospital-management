@@ -46,11 +46,11 @@
 
     <div id="patientMsg" class="mt-3 text-center"></div>
 
-    <!-- Appointment section ALWAYS visible -->
-    <div id="appointmentSection">
+    <!-- Appointment section hidden initially -->
+    <div id="appointmentSection" style="display:none;">
       <h3 class="mt-4">Book Appointment</h3>
       <form id="bookAppointmentForm">
-        <input type="number" id="patientId" class="form-control mb-2" placeholder="Patient ID (login required)" readonly>
+        <input type="number" id="patientId" class="form-control mb-2" placeholder="Patient ID" readonly>
         <input type="number" id="doctorId" class="form-control mb-2" placeholder="Doctor ID" required>
         <input type="date" id="appointmentDate" class="form-control mb-2" required>
         <input type="time" id="appointmentTime" class="form-control mb-2" required>
@@ -75,8 +75,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="script.js"></script>
   <script>
-    let loggedInPatientId = null; // store current patient id after login
-
     // Patient login
     document.getElementById('patientLoginForm').addEventListener('submit', function(e){
       e.preventDefault();
@@ -84,10 +82,11 @@
       const password = document.getElementById('patientPassword').value;
       patientLogin(email, password, function(data){
         if(data.success){
-          loggedInPatientId = data.patient.patient_id;
           document.getElementById('patientMsg').innerText = "Login Successful";
-          document.getElementById('patientId').value = loggedInPatientId;
-          loadAppointments(loggedInPatientId);
+          document.getElementById('patientLoginForm').style.display = 'none';
+          document.getElementById('appointmentSection').style.display = 'block';
+          document.getElementById('patientId').value = data.patient.patient_id;
+          loadAppointments(data.patient.patient_id);
         } else {
           document.getElementById('patientMsg').innerText = "Login Failed";
         }
@@ -119,11 +118,7 @@
     // Book appointment
     document.getElementById('bookAppointmentForm').addEventListener('submit', function(e){
       e.preventDefault();
-      if(!loggedInPatientId){
-        document.getElementById('patientMsg').innerText = "Please login first before booking an appointment!";
-        return;
-      }
-      const patient_id = loggedInPatientId;
+      const patient_id = document.getElementById('patientId').value;
       const doctor_id = document.getElementById('doctorId').value;
       const date = document.getElementById('appointmentDate').value;
       const time = document.getElementById('appointmentTime').value;
