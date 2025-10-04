@@ -5,13 +5,43 @@
   <title>Patient Portal</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="style.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f0f8ff, #cce0ff);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      border-radius: 20px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    .nav-tabs .nav-link.active {
+      background-color: #0d6efd;
+      color: white;
+      border-radius: 10px;
+    }
+    .profile-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: none;
+      margin: 10px auto;
+    }
+  </style>
 </head>
 <body>
-  <div class="container mt-5">
-    <h2 class="text-center">Patient Portal</h2>
+  <div class="card p-4">
+    <h2 class="text-center mb-3">🧑‍⚕️ Patient Portal</h2>
 
     <!-- Tabs for Login / Sign Up -->
-    <ul class="nav nav-tabs" id="patientTab" role="tablist">
+    <ul class="nav nav-tabs mb-3" id="patientTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button">Login</button>
       </li>
@@ -20,7 +50,7 @@
       </li>
     </ul>
 
-    <div class="tab-content mt-3">
+    <div class="tab-content">
       <!-- Login Form -->
       <div class="tab-pane fade show active" id="login">
         <form id="patientLoginForm">
@@ -32,13 +62,15 @@
 
       <!-- Sign Up Form -->
       <div class="tab-pane fade" id="signup">
-        <form id="patientSignupForm">
+        <form id="patientSignupForm" enctype="multipart/form-data">
           <input type="text" id="patientName" class="form-control mb-2" placeholder="Full Name" required>
           <input type="email" id="patientEmailSU" class="form-control mb-2" placeholder="Email" required>
           <input type="password" id="patientPasswordSU" class="form-control mb-2" placeholder="Password" required>
           <input type="number" id="patientAge" class="form-control mb-2" placeholder="Age" required>
           <input type="text" id="patientGender" class="form-control mb-2" placeholder="Gender" required>
           <input type="text" id="patientContact" class="form-control mb-2" placeholder="Contact" required>
+          <input type="file" id="patientPhoto" class="form-control mb-2" accept="image/*">
+          <img id="patientPhotoPreview" class="profile-preview" alt="Preview">
           <button type="submit" class="btn btn-success w-100">Sign Up</button>
         </form>
       </div>
@@ -46,11 +78,10 @@
 
     <div id="patientMsg" class="mt-3 text-center"></div>
 
-    <!-- Appointment section hidden initially -->
+    <!-- Appointment Section hidden until login -->
     <div id="appointmentSection" style="display:none;">
       <h3 class="mt-4">Book Appointment</h3>
       <form id="bookAppointmentForm">
-        <input type="number" id="patientId" class="form-control mb-2" placeholder="Patient ID" readonly>
         <input type="number" id="doctorId" class="form-control mb-2" placeholder="Doctor ID" required>
         <input type="date" id="appointmentDate" class="form-control mb-2" required>
         <input type="time" id="appointmentTime" class="form-control mb-2" required>
@@ -61,7 +92,7 @@
       <table class="table table-striped" id="appointmentTable">
         <thead>
           <tr>
-            <th>Doctor Name</th>
+            <th>Doctor ID</th>
             <th>Date</th>
             <th>Time</th>
             <th>Status</th>
@@ -73,76 +104,64 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="script.js"></script>
   <script>
+    // Preview uploaded image
+    document.getElementById('patientPhoto')?.addEventListener('change', function(e){
+      const file = e.target.files[0];
+      const preview = document.getElementById('patientPhotoPreview');
+      if(file){
+        const reader = new FileReader();
+        reader.onload = () => {
+          preview.src = reader.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
     // Patient login
-    document.getElementById('patientLoginForm').addEventListener('submit', function(e){
+    document.getElementById('patientLoginForm')?.addEventListener('submit', async function(e){
       e.preventDefault();
       const email = document.getElementById('patientEmail').value;
       const password = document.getElementById('patientPassword').value;
-      patientLogin(email, password, function(data){
-        if(data.success){
-          document.getElementById('patientMsg').innerText = "Login Successful";
-          document.getElementById('patientLoginForm').style.display = 'none';
-          document.getElementById('appointmentSection').style.display = 'block';
-          document.getElementById('patientId').value = data.patient.patient_id;
-          loadAppointments(data.patient.patient_id);
-        } else {
-          document.getElementById('patientMsg').innerText = "Login Failed";
-        }
+      // Call backend API here (MongoDB)
+      // Example fetch:
+      /*
+      const res = await fetch('http://localhost:5000/patient/login', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email,password})
       });
+      const data = await res.json();
+      */
+      // Mock success for demo:
+      const data = {success:true, patient:{patient_id:1, name:"Demo Patient"}};
+      if(data.success){
+        patientMsg.innerText = "Login Successful";
+        document.getElementById('appointmentSection').style.display = 'block';
+        document.getElementById('patientLoginForm').style.display = 'none';
+      } else {
+        patientMsg.innerText = "Login Failed";
+      }
     });
 
     // Patient signup
-    document.getElementById('patientSignupForm').addEventListener('submit', function(e){
+    document.getElementById('patientSignupForm')?.addEventListener('submit', async function(e){
       e.preventDefault();
-      const patient = {
-        name: document.getElementById('patientName').value,
-        email: document.getElementById('patientEmailSU').value,
-        password: document.getElementById('patientPasswordSU').value,
-        age: document.getElementById('patientAge').value,
-        gender: document.getElementById('patientGender').value,
-        contact: document.getElementById('patientContact').value
-      };
-      fetch('http://localhost:5000/patient/signup', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(patient)
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('patientMsg').innerText = data.success ? "Sign Up Successful! Please login." : data.message;
+      const formData = new FormData(this);
+      // Call backend API here (MongoDB)
+      // Example fetch:
+      /*
+      const res = await fetch('http://localhost:5000/patient/signup', {
+        method:'POST',
+        body: formData
       });
+      const data = await res.json();
+      patientMsg.innerText = data.message;
+      */
+      // Mock success for demo:
+      patientMsg.innerText = "Sign Up Successful! Please login.";
     });
-
-    // Book appointment
-    document.getElementById('bookAppointmentForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      const patient_id = document.getElementById('patientId').value;
-      const doctor_id = document.getElementById('doctorId').value;
-      const date = document.getElementById('appointmentDate').value;
-      const time = document.getElementById('appointmentTime').value;
-      bookAppointment(patient_id, doctor_id, date, time, function(data){
-        document.getElementById('patientMsg').innerText = data.success ? "Appointment Booked!" : "Failed to Book";
-        loadAppointments(patient_id);
-      });
-    });
-
-    // Load appointments (with doctor name)
-    function loadAppointments(patientId){
-      getAppointments('patient', patientId, function(data){
-        const tbody = document.querySelector('#appointmentTable tbody');
-        tbody.innerHTML = '';
-        data.forEach(a => {
-          tbody.innerHTML += `<tr>
-            <td>${a.doctor_name}</td>
-            <td>${a.appointment_date}</td>
-            <td>${a.appointment_time}</td>
-            <td>${a.status}</td>
-          </tr>`;
-        });
-      });
-    }
   </script>
 </body>
 </html>

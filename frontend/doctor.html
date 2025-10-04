@@ -5,13 +5,43 @@
   <title>Doctor Portal</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="style.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f0f8ff, #cce0ff);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      border-radius: 20px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    .nav-tabs .nav-link.active {
+      background-color: #0d6efd;
+      color: white;
+      border-radius: 10px;
+    }
+    .profile-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: none;
+      margin: 10px auto;
+    }
+  </style>
 </head>
 <body>
-  <div class="container mt-5">
-    <h2 class="text-center">Doctor Portal</h2>
+  <div class="card p-4">
+    <h2 class="text-center mb-3">🩺 Doctor Portal</h2>
 
     <!-- Tabs for Login / Sign Up -->
-    <ul class="nav nav-tabs" id="doctorTab" role="tablist">
+    <ul class="nav nav-tabs mb-3" id="doctorTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button">Login</button>
       </li>
@@ -20,33 +50,34 @@
       </li>
     </ul>
 
-    <div class="tab-content mt-3">
+    <div class="tab-content">
       <!-- Login Form -->
       <div class="tab-pane fade show active" id="login">
         <form id="doctorLoginForm">
           <input type="email" id="doctorEmail" class="form-control mb-2" placeholder="Email" required>
           <input type="password" id="doctorPassword" class="form-control mb-2" placeholder="Password" required>
-          <button type="submit" class="btn btn-success w-100">Login</button>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>
       </div>
 
       <!-- Sign Up Form -->
       <div class="tab-pane fade" id="signup">
-        <form id="doctorSignupForm">
+        <form id="doctorSignupForm" enctype="multipart/form-data">
           <input type="text" id="doctorName" class="form-control mb-2" placeholder="Full Name" required>
           <input type="text" id="doctorSpecialization" class="form-control mb-2" placeholder="Specialization" required>
           <input type="email" id="doctorEmailSU" class="form-control mb-2" placeholder="Email" required>
           <input type="password" id="doctorPasswordSU" class="form-control mb-2" placeholder="Password" required>
-          <input type="text" id="doctorAvailability" class="form-control mb-2" placeholder="Availability" required>
-          <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+          <input type="file" id="doctorPhoto" class="form-control mb-2" accept="image/*">
+          <img id="doctorPhotoPreview" class="profile-preview" alt="Preview">
+          <button type="submit" class="btn btn-success w-100">Sign Up</button>
         </form>
       </div>
     </div>
 
     <div id="doctorMsg" class="mt-3 text-center"></div>
 
-    <!-- Doctor appointment section (always visible now) -->
-    <div id="doctorSection">
+    <!-- Doctor appointment section hidden until login -->
+    <div id="doctorSection" style="display:none;">
       <h3 class="mt-4">Your Appointments</h3>
       <table class="table table-striped" id="doctorAppointmentTable">
         <thead>
@@ -63,59 +94,64 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="script.js"></script>
   <script>
+    // Preview uploaded image
+    document.getElementById('doctorPhoto')?.addEventListener('change', function(e){
+      const file = e.target.files[0];
+      const preview = document.getElementById('doctorPhotoPreview');
+      if(file){
+        const reader = new FileReader();
+        reader.onload = () => {
+          preview.src = reader.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
     // Doctor login
-    document.getElementById('doctorLoginForm').addEventListener('submit', function(e){
+    document.getElementById('doctorLoginForm')?.addEventListener('submit', async function(e){
       e.preventDefault();
       const email = document.getElementById('doctorEmail').value;
       const password = document.getElementById('doctorPassword').value;
-      doctorLogin(email, password, function(data){
-        if(data.success){
-          document.getElementById('doctorMsg').innerText = "Login Successful";
-          loadDoctorAppointments(data.doctor.doctor_id);
-        } else {
-          document.getElementById('doctorMsg').innerText = "Login Failed";
-        }
+      // Call backend API here (MongoDB)
+      // Example fetch:
+      /*
+      const res = await fetch('http://localhost:5000/doctor/login', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({email,password})
       });
+      const data = await res.json();
+      */
+      // Mock success for demo:
+      const data = {success:true, doctor:{doctor_id:1, name:"Dr. Demo"}};
+      if(data.success){
+        doctorMsg.innerText = "Login Successful";
+        document.getElementById('doctorLoginForm').style.display = 'none';
+        document.getElementById('doctorSection').style.display = 'block';
+      } else {
+        doctorMsg.innerText = "Login Failed";
+      }
     });
 
     // Doctor signup
-    document.getElementById('doctorSignupForm').addEventListener('submit', function(e){
+    document.getElementById('doctorSignupForm')?.addEventListener('submit', async function(e){
       e.preventDefault();
-      const doctor = {
-        name: document.getElementById('doctorName').value,
-        specialization: document.getElementById('doctorSpecialization').value,
-        email: document.getElementById('doctorEmailSU').value,
-        password: document.getElementById('doctorPasswordSU').value,
-        availability: document.getElementById('doctorAvailability').value
-      };
-      fetch('http://localhost:5000/doctor/signup', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(doctor)
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('doctorMsg').innerText = data.success ? "Sign Up Successful! Please login." : data.message;
+      const formData = new FormData(this);
+      // Call backend API here (MongoDB)
+      // Example fetch:
+      /*
+      const res = await fetch('http://localhost:5000/doctor/signup', {
+        method:'POST',
+        body:formData
       });
+      const data = await res.json();
+      doctorMsg.innerText = data.message;
+      */
+      // Mock success for demo:
+      doctorMsg.innerText = "Sign Up Successful! Please login.";
     });
-
-    // Load doctor appointments with patient names
-    function loadDoctorAppointments(doctorId){
-      getAppointments('doctor', doctorId, function(data){
-        const tbody = document.querySelector('#doctorAppointmentTable tbody');
-        tbody.innerHTML = '';
-        data.forEach(a => {
-          tbody.innerHTML += `<tr>
-            <td>${a.patient_name}</td>
-            <td>${a.appointment_date}</td>
-            <td>${a.appointment_time}</td>
-            <td>${a.status}</td>
-          </tr>`;
-        });
-      });
-    }
   </script>
 </body>
 </html>

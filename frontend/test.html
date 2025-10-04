@@ -2,147 +2,104 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Patient Portal</title>
+  <title>Hospital Management</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="style.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+
+      /* ✅ Use your background image here */
+      background: url('hospital-management/frontend/istockphoto-2099357117-612x612.jpg') no-repeat center center/cover;
+      background-attachment: fixed;
+
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* ✅ Add a translucent backdrop to see the image through */
+    .portal-card {
+      background: rgba(255, 255, 255, 0.85); /* was #fff — now transparent */
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 100%;
+      max-width: 450px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      backdrop-filter: blur(6px); /* adds glass effect */
+    }
+
+    .portal-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+
+    h1 {
+      color: #2e7d32;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    p {
+      color: #333;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+
+    .btn-custom {
+      padding: 15px;
+      font-size: 1.1rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .btn-patient {
+      background: linear-gradient(135deg, #42a5f5, #1e88e5);
+      color: #fff;
+    }
+
+    .btn-patient:hover {
+      background: linear-gradient(135deg, #1e88e5, #1565c0);
+      transform: scale(1.05);
+    }
+
+    .btn-doctor {
+      background: linear-gradient(135deg, #66bb6a, #388e3c);
+      color: #fff;
+    }
+
+    .btn-doctor:hover {
+      background: linear-gradient(135deg, #388e3c, #2e7d32);
+      transform: scale(1.05);
+    }
+
+    .footer {
+      margin-top: 25px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
 </head>
 <body>
-  <div class="container mt-5">
-    <h2 class="text-center">Patient Portal</h2>
-
-    <!-- Tabs for Login / Sign Up -->
-    <ul class="nav nav-tabs" id="patientTab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button">Login</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button">Sign Up</button>
-      </li>
-    </ul>
-
-    <div class="tab-content mt-3">
-      <!-- Login Form -->
-      <div class="tab-pane fade show active" id="login">
-        <form id="patientLoginForm">
-          <input type="email" id="patientEmail" class="form-control mb-2" placeholder="Email" required>
-          <input type="password" id="patientPassword" class="form-control mb-2" placeholder="Password" required>
-          <button type="submit" class="btn btn-primary w-100">Login</button>
-        </form>
+  <div class="portal-card">
+    <h1>Hospital Management System</h1>
+    <p>Choose your portal to continue</p>
+    <div class="row g-3">
+      <div class="col-12">
+        <a href="patient.html" class="btn btn-custom btn-patient w-100">Patient Portal</a>
       </div>
-
-      <!-- Sign Up Form -->
-      <div class="tab-pane fade" id="signup">
-        <form id="patientSignupForm">
-          <input type="text" id="patientName" class="form-control mb-2" placeholder="Full Name" required>
-          <input type="email" id="patientEmailSU" class="form-control mb-2" placeholder="Email" required>
-          <input type="password" id="patientPasswordSU" class="form-control mb-2" placeholder="Password" required>
-          <input type="number" id="patientAge" class="form-control mb-2" placeholder="Age" required>
-          <input type="text" id="patientGender" class="form-control mb-2" placeholder="Gender" required>
-          <input type="text" id="patientContact" class="form-control mb-2" placeholder="Contact" required>
-          <button type="submit" class="btn btn-success w-100">Sign Up</button>
-        </form>
+      <div class="col-12">
+        <a href="doctor.html" class="btn btn-custom btn-doctor w-100">Doctor Portal</a>
       </div>
     </div>
-
-    <div id="patientMsg" class="mt-3 text-center"></div>
-
-    <!-- Appointment section hidden initially -->
-    <div id="appointmentSection" style="display:none;">
-      <h3 class="mt-4">Book Appointment</h3>
-      <form id="bookAppointmentForm">
-        <input type="number" id="patientId" class="form-control mb-2" placeholder="Patient ID" readonly>
-        <input type="number" id="doctorId" class="form-control mb-2" placeholder="Doctor ID" required>
-        <input type="date" id="appointmentDate" class="form-control mb-2" required>
-        <input type="time" id="appointmentTime" class="form-control mb-2" required>
-        <button type="submit" class="btn btn-success w-100">Book Appointment</button>
-      </form>
-
-      <h3 class="mt-4">Your Appointments</h3>
-      <table class="table table-striped" id="appointmentTable">
-        <thead>
-          <tr>
-            <th>Doctor Name</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+    <div class="footer mt-3">
+      © 2025 Hospital Management System
     </div>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="script.js"></script>
-  <script>
-    // Patient login
-    document.getElementById('patientLoginForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      const email = document.getElementById('patientEmail').value;
-      const password = document.getElementById('patientPassword').value;
-      patientLogin(email, password, function(data){
-        if(data.success){
-          document.getElementById('patientMsg').innerText = "Login Successful";
-          document.getElementById('patientLoginForm').style.display = 'none';
-          document.getElementById('appointmentSection').style.display = 'block';
-          document.getElementById('patientId').value = data.patient.patient_id;
-          loadAppointments(data.patient.patient_id);
-        } else {
-          document.getElementById('patientMsg').innerText = "Login Failed";
-        }
-      });
-    });
-
-    // Patient signup
-    document.getElementById('patientSignupForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      const patient = {
-        name: document.getElementById('patientName').value,
-        email: document.getElementById('patientEmailSU').value,
-        password: document.getElementById('patientPasswordSU').value,
-        age: document.getElementById('patientAge').value,
-        gender: document.getElementById('patientGender').value,
-        contact: document.getElementById('patientContact').value
-      };
-      fetch('http://localhost:5000/patient/signup', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(patient)
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('patientMsg').innerText = data.success ? "Sign Up Successful! Please login." : data.message;
-      });
-    });
-
-    // Book appointment
-    document.getElementById('bookAppointmentForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      const patient_id = document.getElementById('patientId').value;
-      const doctor_id = document.getElementById('doctorId').value;
-      const date = document.getElementById('appointmentDate').value;
-      const time = document.getElementById('appointmentTime').value;
-      bookAppointment(patient_id, doctor_id, date, time, function(data){
-        document.getElementById('patientMsg').innerText = data.success ? "Appointment Booked!" : "Failed to Book";
-        loadAppointments(patient_id);
-      });
-    });
-
-    // Load appointments (with doctor name)
-    function loadAppointments(patientId){
-      getAppointments('patient', patientId, function(data){
-        const tbody = document.querySelector('#appointmentTable tbody');
-        tbody.innerHTML = '';
-        data.forEach(a => {
-          tbody.innerHTML += `<tr>
-            <td>${a.doctor_name}</td>
-            <td>${a.appointment_date}</td>
-            <td>${a.appointment_time}</td>
-            <td>${a.status}</td>
-          </tr>`;
-        });
-      });
-    }
-  </script>
 </body>
 </html>
