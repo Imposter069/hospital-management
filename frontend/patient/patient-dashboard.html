@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Patient Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #eef3ff;
+      font-family: 'Poppins', sans-serif;
+      padding-top: 70px;
+    }
+    .navbar {
+      background-color: #0d6efd;
+    }
+    .navbar-brand, .nav-link, .dropdown-item {
+      color: white !important;
+    }
+    .dropdown-item:hover {
+      background-color: #e9ecef;
+      color: #000 !important;
+    }
+    .profile-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid white;
+    }
+    .dropdown-menu {
+      display: block !important; /* Always visible */
+      position: absolute;
+      right: 0;
+      top: 60px;
+    }
+    .card {
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="#">🧍‍♀️ Patient Dashboard</a>
+      <div class="dropdown ms-auto">
+        <img src="https://cdn-icons-png.flaticon.com/512/1946/1946429.png" id="patientProfileImg" class="profile-img dropdown-toggle" data-bs-toggle="dropdown">
+        <ul class="dropdown-menu dropdown-menu-end mt-2">
+          <li><h6 class="dropdown-header" id="patientNameMenu">Riya Sharma</h6></li>
+          <li><span class="dropdown-item-text" id="patientEmailMenu">riya@gmail.com</span></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><button class="dropdown-item" id="viewProfileBtn">View Profile</button></li>
+          <li><button class="dropdown-item" id="changePasswordBtn">Change Password</button></li>
+          <li><button class="dropdown-item text-danger" id="logoutBtn">Logout</button></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mt-4">
+    <!-- Patient Info -->
+    <div class="card p-3 mb-4">
+      <h4>Welcome, <span id="patientName">Riya Sharma</span></h4>
+      <p><strong>Email:</strong> <span id="patientEmail">riya@gmail.com</span></p>
+      <p><strong>Age:</strong> <span id="patientAge">26</span></p>
+      <p><strong>Gender:</strong> <span id="patientGender">Female</span></p>
+    </div>
+
+    <!-- Book Appointment -->
+    <div class="card p-3 mb-4">
+      <h4>Book Appointment</h4>
+      <form id="bookAppointmentForm">
+        <div class="mb-3">
+          <label for="selectDoctor" class="form-label">Select Doctor</label>
+          <select id="selectDoctor" class="form-select" required>
+            <option value="">Choose...</option>
+            <option value="Dr. Arjun Mehta">Dr. Arjun Mehta — Cardiologist</option>
+            <option value="Dr. Sneha Patel">Dr. Sneha Patel — Neurologist</option>
+            <option value="Dr. Rohan Gupta">Dr. Rohan Gupta — Pediatrician</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="appointmentDate" class="form-label">Date</label>
+          <input type="date" id="appointmentDate" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="appointmentTime" class="form-label">Time</label>
+          <input type="time" id="appointmentTime" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Book Appointment</button>
+      </form>
+    </div>
+
+    <!-- Prescription Section -->
+    <div class="card p-3">
+      <h4>Your Prescriptions</h4>
+      <table class="table table-bordered" id="prescriptionTable">
+        <thead>
+          <tr>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Prescription</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Example Rows -->
+          <tr>
+            <td>Dr. Arjun Mehta</td>
+            <td>2025-11-04</td>
+            <td>Paracetamol 500mg twice a day</td>
+          </tr>
+          <tr>
+            <td>Dr. Sneha Patel</td>
+            <td>2025-11-02</td>
+            <td>Vitamin D supplements for 15 days</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const patientData = {
+      name: "Riya Sharma",
+      email: "riya@gmail.com",
+      age: 26,
+      gender: "Female",
+      photo: "https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
+    };
+
+    // Display patient info
+    document.getElementById('patientName').innerText = patientData.name;
+    document.getElementById('patientEmail').innerText = patientData.email;
+    document.getElementById('patientAge').innerText = patientData.age;
+    document.getElementById('patientGender').innerText = patientData.gender;
+    document.getElementById('patientProfileImg').src = patientData.photo;
+    document.getElementById('patientNameMenu').innerText = patientData.name;
+    document.getElementById('patientEmailMenu').innerText = patientData.email;
+
+    // Book Appointment
+    document.getElementById('bookAppointmentForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const doctor = document.getElementById('selectDoctor').value;
+      const date = document.getElementById('appointmentDate').value;
+      const time = document.getElementById('appointmentTime').value;
+
+      if (!doctor || !date || !time) {
+        alert("Please fill all fields");
+        return;
+      }
+
+      // Later we’ll connect to backend API
+      /*
+      await fetch('http://localhost:5000/patient/book', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ doctor, date, time })
+      });
+      */
+      alert(`Appointment booked with ${doctor} on ${date} at ${time}`);
+      document.getElementById('bookAppointmentForm').reset();
+    });
+
+    // Dropdown actions
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      if(confirm("Logout?")) window.location.href = "patient.html";
+    });
+
+    document.getElementById('viewProfileBtn').addEventListener('click', () => {
+      alert(`👤 ${patientData.name}\n${patientData.email}\n${patientData.age} years, ${patientData.gender}`);
+    });
+
+    document.getElementById('changePasswordBtn').addEventListener('click', () => {
+      const newPass = prompt("Enter new password:");
+      if(newPass) alert("Password changed successfully (mock)");
+    });
+  </script>
+</body>
+</html>
